@@ -73,10 +73,10 @@ public class DataTypeFloat32 implements IDataType {
     }
 
     @Override
-    public Object[] deserializeBinaryBulk(int rows, BinaryDeserializer deserializer) throws IOException {
-        Float[] data = new Float[rows];
-        for (int row = 0; row < rows; row++) {
-            data[row] = deserializer.readFloat();
+    public Object[] deserializeBinaryBulk(int rowCnt, BinaryDeserializer deserializer) throws IOException {
+        Float[] data = new Float[rowCnt];
+        for (int i = 0; i < rowCnt; i++) {
+            data[i] = deserializer.readFloat();
         }
         return data;
     }

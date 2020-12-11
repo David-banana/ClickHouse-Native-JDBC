@@ -159,10 +159,10 @@ public class DataTypeDateTime64 implements IDataType {
     }
 
     @Override
-    public Object[] deserializeBinaryBulk(int rows, BinaryDeserializer deserializer) throws IOException {
-        ZonedDateTime[] data = new ZonedDateTime[rows];
-        for (int row = 0; row < rows; row++) {
-            data[row] = (ZonedDateTime) deserializeBinary(deserializer);
+    public Object[] deserializeBinaryBulk(int rowCnt, BinaryDeserializer deserializer) throws IOException {
+        ZonedDateTime[] data = new ZonedDateTime[rowCnt];
+        for (int i = 0; i < rowCnt; i++) {
+            data[i] = (ZonedDateTime) deserializeBinary(deserializer);
         }
         return data;
     }

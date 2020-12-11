@@ -87,11 +87,11 @@ public class DataTypeDate implements IDataType {
     }
 
     @Override
-    public Object[] deserializeBinaryBulk(int rows, BinaryDeserializer deserializer) throws IOException {
-        LocalDate[] data = new LocalDate[rows];
-        for (int row = 0; row < rows; row++) {
-            short epochDay = deserializer.readShort();
-            data[row] = LocalDate.ofEpochDay(epochDay);
+    public Object[] deserializeBinaryBulk(int rowCnt, BinaryDeserializer deserializer) throws IOException {
+        LocalDate[] data = new LocalDate[rowCnt];
+        for (int row = 0; row < rowCnt; row++) {
+            short daysSinceEpoch = deserializer.readShort();
+            data[row] = LocalDate.ofEpochDay(daysSinceEpoch);
         }
         return data;
     }

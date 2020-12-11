@@ -73,10 +73,10 @@ public class DataTypeFloat64 implements IDataType {
     }
 
     @Override
-    public Double[] deserializeBinaryBulk(int rows, BinaryDeserializer deserializer) throws IOException {
-        Double[] data = new Double[rows];
-        for (int row = 0; row < rows; row++) {
-            data[row] = deserializer.readDouble();
+    public Double[] deserializeBinaryBulk(int rowCnt, BinaryDeserializer deserializer) throws IOException {
+        Double[] data = new Double[rowCnt];
+        for (int i = 0; i < rowCnt; i++) {
+            data[i] = deserializer.readDouble();
         }
         return data;
     }

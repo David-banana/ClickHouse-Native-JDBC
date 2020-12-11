@@ -90,9 +90,9 @@ public class DataTypeString implements IDataType {
     }
 
     @Override
-    public Object[] deserializeBinaryBulk(int rows, BinaryDeserializer deserializer) throws SQLException, IOException {
-        String[] data = new String[rows];
-        for (int row = 0; row < rows; row++) {
+    public Object[] deserializeBinaryBulk(int rowCnt, BinaryDeserializer deserializer) throws SQLException, IOException {
+        String[] data = new String[rowCnt];
+        for (int row = 0; row < rowCnt; row++) {
             byte[] bs = deserializer.readBytesBinary();
             data[row] = new String(bs, charset);
         }

@@ -123,10 +123,10 @@ public class DataTypeFixedString implements IDataType {
     }
 
     @Override
-    public Object[] deserializeBinaryBulk(int rows, BinaryDeserializer deserializer) throws SQLException, IOException {
-        String[] data = new String[rows];
-        for (int row = 0; row < rows; row++) {
-            data[row] = new String(deserializer.readBytes(n), charset);
+    public Object[] deserializeBinaryBulk(int rowCnt, BinaryDeserializer deserializer) throws SQLException, IOException {
+        String[] data = new String[rowCnt];
+        for (int i = 0; i < rowCnt; i++) {
+            data[i] = new String(deserializer.readBytes(n), charset);
         }
         return data;
     }

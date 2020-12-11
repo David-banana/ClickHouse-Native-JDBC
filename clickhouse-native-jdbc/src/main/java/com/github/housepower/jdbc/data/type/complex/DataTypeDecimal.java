@@ -200,10 +200,10 @@ public class DataTypeDecimal implements IDataType {
     }
 
     @Override
-    public Object[] deserializeBinaryBulk(int rows, BinaryDeserializer deserializer) throws SQLException, IOException {
-        BigDecimal[] data = new BigDecimal[rows];
-        for (int row = 0; row < rows; row++) {
-            data[row] = (BigDecimal) this.deserializeBinary(deserializer);
+    public Object[] deserializeBinaryBulk(int rowCnt, BinaryDeserializer deserializer) throws SQLException, IOException {
+        BigDecimal[] data = new BigDecimal[rowCnt];
+        for (int i = 0; i < rowCnt; i++) {
+            data[i] = (BigDecimal) this.deserializeBinary(deserializer);
         }
         return data;
     }

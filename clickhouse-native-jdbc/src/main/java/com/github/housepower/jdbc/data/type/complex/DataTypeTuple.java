@@ -119,22 +119,22 @@ public class DataTypeTuple implements IDataType {
     }
 
     @Override
-    public void serializeBinaryBulk(Object[] data, BinarySerializer serializer) throws SQLException, IOException {
+    public void serializeBinaryBulk(Object[] values, BinarySerializer serializer) throws SQLException, IOException {
         for (int i = 0; i < nestedTypes.length; i++) {
-            Object[] elemsData = new Object[data.length];
-            for (int row = 0; row < data.length; row++) {
-                elemsData[row] = ((Struct) data[row]).getAttributes()[i];
+            Object[] elemsData = new Object[values.length];
+            for (int row = 0; row < values.length; row++) {
+                elemsData[row] = ((Struct) values[row]).getAttributes()[i];
             }
             nestedTypes[i].serializeBinaryBulk(elemsData, serializer);
         }
     }
 
     @Override
-    public Object[] deserializeBinaryBulk(int rows, BinaryDeserializer deserializer) throws SQLException, IOException {
-        Object[][] rowsWithElems = getRowsWithElems(rows, deserializer);
+    public Object[] deserializeBinaryBulk(int rowCnt, BinaryDeserializer deserializer) throws SQLException, IOException {
+        Object[][] rowsWithElems = getRowsWithElems(rowCnt, deserializer);
 
-        Struct[] rowsData = new Struct[rows];
-        for (int row = 0; row < rows; row++) {
+        Struct[] rowsData = new Struct[rowCnt];
+        for (int row = 0; row < rowCnt; row++) {
             Object[] elemsData = new Object[nestedTypes.length];
 
             for (int elemIndex = 0; elemIndex < nestedTypes.length; elemIndex++) {

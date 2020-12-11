@@ -21,21 +21,30 @@ import com.github.housepower.jdbc.serde.BinarySerializer;
 import java.io.IOException;
 import java.sql.SQLException;
 
-// It would be nice if we introduce a Generic Type, `IDataType<T>`, then we can avoid using `Object` and type cast.
-// Unfortunately Java not support unsigned number, UInt8(u_byte) must be represented by Int16(short), which will
-// break the Generic Type constriction and cause compile failed.
-public interface IDataType {
+/**
+ * IDataType is responsible for:
+ * 1. represent data type attributions
+ * 2. serialize and deserialize
+ * 3. parse from sql text
+ * 4. cast between inner type and other types
+ * 5. format to string
+ * @param <T> inner data type, 1:1 map to ClickHouse data type
+ */
+public interface IDataType<T> {
 
+    // 1. represent data type attributions
     String name();
+
+    default String[] getAliases() {
+        return new String[0];
+    }
 
     int sqlTypeId();
 
-    Object defaultValue();
+    Class<?> javaType();
 
-    Class javaType();
-
-    default Class jdbcJavaType() {
-        return javaType();
+    default Class<T> jdbcJavaType() {
+        return (Class<T>) javaType();
     }
 
     boolean nullable();
@@ -44,22 +53,36 @@ public interface IDataType {
 
     int getScale();
 
-    Object deserializeTextQuoted(SQLLexer lexer) throws SQLException;
+    T defaultValue();
 
-    Object deserializeBinary(BinaryDeserializer deserializer) throws SQLException, IOException;
+    // 2. serialize and deserialize
+    void serializeBinary(T data, BinarySerializer serializer) throws SQLException, IOException;
 
-    void serializeBinary(Object data, BinarySerializer serializer) throws SQLException, IOException;
-
-    default void serializeBinaryBulk(Object[] data, BinarySerializer serializer) throws SQLException, IOException {
-        for (Object d : data) {
-            serializeBinary(d, serializer);
+    default void serializeBinaryBulk(T[] values, BinarySerializer serializer) throws SQLException, IOException {
+        for (T value : values) {
+            serializeBinary(value, serializer);
         }
     }
 
-    Object[] deserializeBinaryBulk(int rows, BinaryDeserializer deserializer) throws SQLException, IOException;
+    T deserializeBinary(BinaryDeserializer deserializer) throws SQLException, IOException;
 
-    default String[] getAliases() {
-        return new String[0];
+    T[] deserializeBinaryBulk(int rowCnt, BinaryDeserializer deserializer) throws SQLException, IOException;
+
+    // 3. parse from sql text
+    T deserializeTextQuoted(SQLLexer lexer) throws SQLException;
+
+    // 4. cast between inner type and other types
+    default <O> T castFrom(O other) {
+        return (T) javaType().cast(other);
+    }
+
+    default <O> O castTo(T inner, Class<O> castToClazz) {
+        return castToClazz.cast(inner);
+    }
+
+    // 5. format to string
+    default <O> String format(O value) {
+        return castTo(castFrom(value), String.class);
     }
 
     default boolean isSigned() {

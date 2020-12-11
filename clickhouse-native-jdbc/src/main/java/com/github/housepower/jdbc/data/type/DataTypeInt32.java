@@ -84,11 +84,11 @@ public class DataTypeInt32 implements IDataType {
     }
 
     @Override
-    public Object[] deserializeBinaryBulk(int rows, BinaryDeserializer deserializer)
+    public Object[] deserializeBinaryBulk(int rowCnt, BinaryDeserializer deserializer)
             throws SQLException, IOException {
-        Object[] data = new Object[rows];
-        for (int row = 0; row < rows; row++) {
-            data[row] = this.deserializeBinary(deserializer);
+        Object[] data = new Object[rowCnt];
+        for (int i = 0; i < rowCnt; i++) {
+            data[i] = this.deserializeBinary(deserializer);
         }
         return data;
     }

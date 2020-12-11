@@ -119,21 +119,21 @@ public class DataTypeNullable implements IDataType {
     }
 
     @Override
-    public void serializeBinaryBulk(Object[] data, BinarySerializer serializer) throws SQLException, IOException {
-        Short[] isNull = new Short[data.length];
-        for (int i = 0; i < data.length; i++) {
-            isNull[i] = (data[i] == null ? IS_NULL : NON_NULL);
-            data[i] = data[i] == null ? nestedDataType.defaultValue() : data[i];
+    public void serializeBinaryBulk(Object[] values, BinarySerializer serializer) throws SQLException, IOException {
+        Short[] isNull = new Short[values.length];
+        for (int i = 0; i < values.length; i++) {
+            isNull[i] = (values[i] == null ? IS_NULL : NON_NULL);
+            values[i] = values[i] == null ? nestedDataType.defaultValue() : values[i];
         }
         nullMapDataType.serializeBinaryBulk(isNull, serializer);
-        nestedDataType.serializeBinaryBulk(data, serializer);
+        nestedDataType.serializeBinaryBulk(values, serializer);
     }
 
     @Override
-    public Object[] deserializeBinaryBulk(int rows, BinaryDeserializer deserializer) throws SQLException, IOException {
-        Object[] nullMap = nullMapDataType.deserializeBinaryBulk(rows, deserializer);
+    public Object[] deserializeBinaryBulk(int rowCnt, BinaryDeserializer deserializer) throws SQLException, IOException {
+        Object[] nullMap = nullMapDataType.deserializeBinaryBulk(rowCnt, deserializer);
 
-        Object[] data = nestedDataType.deserializeBinaryBulk(rows, deserializer);
+        Object[] data = nestedDataType.deserializeBinaryBulk(rowCnt, deserializer);
         for (int i = 0; i < nullMap.length; i++) {
             if (IS_NULL.equals(nullMap[i])) {
                 data[i] = null;

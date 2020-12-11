@@ -117,11 +117,10 @@ public class DataTypeArray implements IDataType {
         }
     }
 
-
     @Override
-    public void serializeBinaryBulk(Object[] data, BinarySerializer serializer) throws SQLException, IOException {
-        offsetIDataType.serializeBinary(data.length, serializer);
-        getElemDataType().serializeBinaryBulk(data, serializer);
+    public void serializeBinaryBulk(Object[] values, BinarySerializer serializer) throws SQLException, IOException {
+        offsetIDataType.serializeBinary(values.length, serializer);
+        getElemDataType().serializeBinaryBulk(values, serializer);
     }
 
     @Override
@@ -131,17 +130,17 @@ public class DataTypeArray implements IDataType {
     }
 
     @Override
-    public Object[] deserializeBinaryBulk(int rows, BinaryDeserializer deserializer) throws IOException, SQLException {
-        ClickHouseArray[] data = new ClickHouseArray[rows];
-        if (rows == 0) {
+    public Object[] deserializeBinaryBulk(int rowCnt, BinaryDeserializer deserializer) throws IOException, SQLException {
+        ClickHouseArray[] data = new ClickHouseArray[rowCnt];
+        if (rowCnt == 0) {
             return data;
         }
 
-        Object[] offsets = offsetIDataType.deserializeBinaryBulk(rows, deserializer);
+        Object[] offsets = offsetIDataType.deserializeBinaryBulk(rowCnt, deserializer);
         ClickHouseArray res = new ClickHouseArray(elemDataType,
-                elemDataType.deserializeBinaryBulk(((BigInteger) offsets[rows - 1]).intValue(), deserializer));
+                elemDataType.deserializeBinaryBulk(((BigInteger) offsets[rowCnt - 1]).intValue(), deserializer));
 
-        for (int row = 0, lastOffset = 0; row < rows; row++) {
+        for (int row = 0, lastOffset = 0; row < rowCnt; row++) {
             BigInteger offset = (BigInteger) offsets[row];
             data[row] = res.slice(lastOffset, offset.intValue() - lastOffset);
             lastOffset = offset.intValue();

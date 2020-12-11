@@ -84,10 +84,10 @@ public class DataTypeInt8 implements IDataType {
     }
 
     @Override
-    public Number[] deserializeBinaryBulk(int rows, BinaryDeserializer deserializer) throws IOException {
-        Number[] data = new Number[rows];
-        for (int row = 0; row < rows; row++) {
-            data[row] = deserializeBinary(deserializer);
+    public Number[] deserializeBinaryBulk(int rowCnt, BinaryDeserializer deserializer) throws IOException {
+        Number[] data = new Number[rowCnt];
+        for (int i = 0; i < rowCnt; i++) {
+            data[i] = deserializeBinary(deserializer);
         }
         return data;
     }
