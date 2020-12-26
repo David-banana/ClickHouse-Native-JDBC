@@ -41,7 +41,7 @@ public interface IDataType<T> {
 
     int sqlTypeId();
 
-    Class<?> javaType();
+    Class<? extends T> javaType();
 
     default Class<T> jdbcJavaType() {
         return (Class<T>) javaType();

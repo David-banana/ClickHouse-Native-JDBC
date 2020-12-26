@@ -16,6 +16,7 @@ package com.github.housepower.jdbc.data.type.complex;
 
 import com.github.housepower.jdbc.connect.NativeContext;
 import com.github.housepower.jdbc.data.IDataType;
+import com.github.housepower.jdbc.misc.BytesCharSeq;
 import com.github.housepower.jdbc.misc.SQLLexer;
 import com.github.housepower.jdbc.serde.BinaryDeserializer;
 import com.github.housepower.jdbc.serde.BinarySerializer;
@@ -25,7 +26,7 @@ import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.sql.Types;
 
-public class DataTypeString implements IDataType {
+public class DataTypeString implements IDataType<CharSequence> {
 
     public static DataTypeCreator CREATOR = (lexer, serverContext) -> new DataTypeString(serverContext);
 
@@ -46,12 +47,13 @@ public class DataTypeString implements IDataType {
     }
 
     @Override
-    public Object defaultValue() {
+    public String defaultValue() {
         return "";
     }
 
+    // TODO FIX Later
     @Override
-    public Class javaType() {
+    public Class<String> javaType() {
         return String.class;
     }
 
@@ -71,12 +73,12 @@ public class DataTypeString implements IDataType {
     }
 
     @Override
-    public void serializeBinary(Object data, BinarySerializer serializer) throws SQLException, IOException {
-        if (data instanceof CharSequence) {
-            serializer.writeStringBinary(data.toString(), charset);
-        } else {
-            serializer.writeBytesBinary((byte[]) data);
+    public void serializeBinary(CharSequence data, BinarySerializer serializer) throws SQLException, IOException {
+        if (data instanceof BytesCharSeq) {
+            serializer.writeBytesBinary(((BytesCharSeq) data).bytes());
+            return;
         }
+        serializer.writeStringBinary(data.toString(), charset);
     }
 
     /**
@@ -90,7 +92,7 @@ public class DataTypeString implements IDataType {
     }
 
     @Override
-    public Object[] deserializeBinaryBulk(int rowCnt, BinaryDeserializer deserializer) throws SQLException, IOException {
+    public String[] deserializeBinaryBulk(int rowCnt, BinaryDeserializer deserializer) throws SQLException, IOException {
         String[] data = new String[rowCnt];
         for (int row = 0; row < rowCnt; row++) {
             byte[] bs = deserializer.readBytesBinary();
@@ -115,7 +117,7 @@ public class DataTypeString implements IDataType {
     }
 
     @Override
-    public Object deserializeTextQuoted(SQLLexer lexer) throws SQLException {
+    public CharSequence deserializeTextQuoted(SQLLexer lexer) throws SQLException {
         return lexer.stringView();
     }
 }
