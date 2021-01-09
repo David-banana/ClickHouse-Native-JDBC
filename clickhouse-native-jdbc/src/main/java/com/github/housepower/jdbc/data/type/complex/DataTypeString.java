@@ -53,8 +53,8 @@ public class DataTypeString implements IDataType<CharSequence> {
 
     // TODO FIX Later
     @Override
-    public Class<String> javaType() {
-        return String.class;
+    public Class<CharSequence> javaType() {
+        return CharSequence.class;
     }
 
     @Override

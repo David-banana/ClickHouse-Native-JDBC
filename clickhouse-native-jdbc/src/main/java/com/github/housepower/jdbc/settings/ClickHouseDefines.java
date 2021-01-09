@@ -16,6 +16,7 @@ package com.github.housepower.jdbc.settings;
 
 public class ClickHouseDefines {
     public static final String NAME = "ClickHouse";
+    public static final String FAKE_CATALOG = "default";
     public static final String DEFAULT_DATABASE = "default";
 
     public static final int MAJOR_VERSION = 1;

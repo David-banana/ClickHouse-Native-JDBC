@@ -14,16 +14,16 @@
 
 package com.github.housepower.jdbc.convert;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.lang.reflect.ParameterizedType;
 
 /**
  * A converter converts a source object of type {@code S} to a target of type {@code T}.
  *
- * <p>Implementations of this interface are thread-safe and can be shared.
- *
  * @param <S> the source type
  * @param <T> the target type
  */
+@ThreadSafe
 @FunctionalInterface
 public interface Converter<S, T> {
 

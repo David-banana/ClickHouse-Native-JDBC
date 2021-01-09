@@ -81,8 +81,8 @@ public interface IDataType<T> {
     }
 
     // 5. format to string
-    default <O> String format(O value) {
-        return castTo(castFrom(value), String.class);
+    default String format(T value) {
+        return value.toString();
     }
 
     default boolean isSigned() {

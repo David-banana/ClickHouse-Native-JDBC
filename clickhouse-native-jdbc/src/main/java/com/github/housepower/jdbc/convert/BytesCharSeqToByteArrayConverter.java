@@ -16,7 +16,9 @@ package com.github.housepower.jdbc.convert;
 
 import com.github.housepower.jdbc.misc.BytesCharSeq;
 
+import javax.annotation.concurrent.ThreadSafe;
 
+@ThreadSafe
 public class BytesCharSeqToByteArrayConverter implements Converter<BytesCharSeq, byte[]> {
 
     @Override
